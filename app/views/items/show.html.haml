@@ -1,0 +1,17 @@
+%h2 アイテム確認
+
+.card.mb-3
+  .card-header アイテム名
+  .card-body= @item.item_name
+.card.mb-3
+  .card-header ストック数
+  .card-body= @item.stock
+.card.mb-3
+  .card-header 説明
+  .card-body= @item.description
+.card.mb-3
+  .card-header 表示順
+  .card-body= @item.dspo
+
+= link_to '編集', edit_item_path(@item), class: 'btn btn-outline-info'
+= link_to '削除', item_path(@item), class: 'btn btn-danger', method: :delete, data: { confirm: '削除してよろしいですか？' }

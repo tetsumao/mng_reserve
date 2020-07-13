@@ -1,0 +1,12 @@
+#login-form
+  %h2 ログイン
+
+  = form_with model: @form, url: :session do |f|
+    %div
+      = f.label :login_name, 'ログインID'
+      = f.text_field :login_name
+    %div
+      = f.label :password, 'パスワード'
+      = f.password_field :password
+    %div
+      = f.submit 'ログイン'

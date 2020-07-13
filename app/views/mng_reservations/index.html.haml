@@ -1,0 +1,36 @@
+%h2 管理予約一覧
+
+%table.table
+  %thead.thead-dark
+    %tr
+      %th{ scope: 'col' } ID
+      %th{ scope: 'col' } ユーザ名
+      %th{ scope: 'col' } アイテム名
+      %th{ scope: 'col' } 数量
+      -# %th{ scope: 'col' } 管理予約名
+      %th{ scope: 'col' } 予約日
+      %th{ scope: 'col' } 開始日
+      %th{ scope: 'col' } 終了日
+      %th{ scope: 'col' } WEB予約ID
+      %th
+      %th
+      %th
+
+  %tbody
+    - @mng_reservations.each do |mng_reservation|
+      %tr
+        %td= mng_reservation.id
+        %td= mng_reservation.user_name
+        %td= mng_reservation.item.item_name
+        %td= mng_reservation.number
+        -# %td= mng_reservation.reservation_name
+        %td= mng_reservation.reservation_date.strftime("%Y/%m/%d")
+        %td= mng_reservation.start_date.strftime("%Y/%m/%d")
+        %td= mng_reservation.end_date.strftime("%Y/%m/%d")
+        %td= mng_reservation.web_reservation_id
+        %td= link_to '表示', mng_reservation, class: 'btn btn-outline-dark btn-sm'
+        %td= link_to '編集', edit_mng_reservation_path(mng_reservation), class: 'btn btn-outline-info btn-sm'
+        %td= link_to '削除', mng_reservation, class: 'btn btn-danger btn-sm', method: :delete, data: { confirm: '削除してよろしいですか？' }
+= paginate @mng_reservations
+
+= link_to '新しい管理予約', new_mng_reservation_path, class: 'btn btn-primary'

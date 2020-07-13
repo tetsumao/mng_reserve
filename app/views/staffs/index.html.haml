@@ -1,0 +1,26 @@
+%h2 職員一覧
+
+%table.table
+  %thead.thead-dark
+    %tr
+      %th{ scope: 'col' } ID
+      %th{ scope: 'col' } ログイン名
+      %th{ scope: 'col' } 職員名
+      %th{ scope: 'col' } 表示順
+      %th
+      %th
+      %th
+
+  %tbody
+    - @staffs.each do |staff|
+      %tr
+        %td= staff.id
+        %td= staff.login_name
+        %td= staff.staff_name
+        %td= staff.dspo
+        %td= link_to '表示', staff, class: 'btn btn-outline-dark btn-sm'
+        %td= link_to '編集', edit_staff_path(staff), class: 'btn btn-outline-info btn-sm'
+        %td= link_to '削除', staff, class: 'btn btn-danger btn-sm', method: :delete, data: { confirm: '削除してよろしいですか？' }
+= paginate @staffs
+
+= link_to '新しい職員', new_staff_path, class: 'btn btn-primary'

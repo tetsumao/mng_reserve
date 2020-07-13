@@ -1,0 +1,13 @@
+-# frozen_string_literal: true
+= simple_form_for(@staff) do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+
+  .form-inputs
+    = f.input :login_name
+    = f.input :password
+    = f.input :staff_name
+    = f.input :dspo, input_html: {value: @staff.new_record? ? Staff.next_dspo : @staff.dspo}
+
+  .form-actions.text-center
+    = f.button :submit, class: 'btn btn-primary'

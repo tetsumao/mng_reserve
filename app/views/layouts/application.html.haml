@@ -1,0 +1,53 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title 管理システム
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  %body{style: 'padding-top: 70px;'}
+    .fixed-top
+      %nav.navbar.navbar-expand-md.bg-dark.navbar-dark.bg-dark
+        .container
+          = link_to '管理システム', root_path, class: 'navbar-brand'
+          %button.navbar-toggler{type: 'button', 'data-toggle': 'collapse', 'data-target': '#navbarNavDropdown', 'aria-controls': 'navbarNavDropdown', 'aria-expanded': false, 'aria-label': 'Toggle navigation'}
+            %span.navbar-toggler-icon
+          .collapse.navbar-collapse#navbarNavDropdown
+            - if staff_signed_in?
+              %ul.navbar-nav.mr-auto
+                %li.nav-item
+                  %a.nav-link{href: mng_reservations_path}
+                    管理予約
+                %li.nav-item
+                  %a.nav-link{href: web_reservations_path}
+                    保留WEB予約
+                %li.nav-item
+                  %a.nav-link{href: items_path}
+                    アイテム
+                %li.nav-item
+                  %a.nav-link{href: staffs_path}
+                    職員
+                %li.nav-item
+                  = form_with url: rest_req_path, remote: true do |f|
+                    = f.submit '予約システム同期', class: 'btn btn-primary'
+              %ul.navbar-nav
+                %li.nav-item
+                  %a.nav-link{href: staff_path(current_staff.id)}
+                    #{current_staff.staff_name} さん
+                %li.nav-item
+                  %a.nav-link{href: session_path, 'data-method': :delete}
+                    ログアウト
+    .container
+      %header
+        -if flash.notice
+          %script{ type: 'text/javascript' }
+            $(function(){ toastr.info('#{flash.notice}'); });
+        -if flash.alert
+          %script{ type: 'text/javascript' }
+            $(function(){ toastr.warning('#{flash.alert}'); });
+      = yield
+      %footer
+        .fixed-bottom.bg-mytop &copy; 2020

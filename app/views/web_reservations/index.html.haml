@@ -1,0 +1,38 @@
+%h2 WEB予約一覧
+
+%table.table
+  %thead.thead-dark
+    %tr
+      %th{ scope: 'col' } ID
+      %th{ scope: 'col' } ユーザID
+      %th{ scope: 'col' } ユーザ名
+      %th{ scope: 'col' } アイテム名
+      %th{ scope: 'col' } 数量
+      -# %th{ scope: 'col' } WEB予約名
+      %th{ scope: 'col' } 予約日
+      %th{ scope: 'col' } 開始日
+      %th{ scope: 'col' } 終了日
+      %th{ scope: 'col' } WEB送信日時
+      %th
+      %th
+      %th
+      %th
+
+  %tbody
+    - @web_reservations.each do |web_reservation|
+      %tr
+        %td= web_reservation.id
+        %td= web_reservation.user_id
+        %td= web_reservation.user_name
+        %td= web_reservation.item.item_name
+        %td= web_reservation.number
+        -# %td= web_reservation.reservation_name
+        %td= web_reservation.reservation_date.strftime("%Y/%m/%d")
+        %td= web_reservation.start_date.strftime("%Y/%m/%d")
+        %td= web_reservation.end_date.strftime("%Y/%m/%d")
+        %td= web_reservation.sent_at
+        %td= link_to 'MNG登録', determination_web_reservation_path(web_reservation), class: 'btn btn-dark btn-sm', method: :post, data: { confirm: "MNG予約に登録します。\nよろしいですか？" }
+        %td= link_to '表示', web_reservation, class: 'btn btn-outline-dark btn-sm'
+        %td= link_to '編集', edit_web_reservation_path(web_reservation), class: 'btn btn-outline-info btn-sm'
+        %td= link_to '削除', web_reservation, class: 'btn btn-danger btn-sm', method: :delete, data: { confirm: '削除してよろしいですか？' }
+= paginate @web_reservations

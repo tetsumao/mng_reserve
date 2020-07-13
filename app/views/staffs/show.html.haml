@@ -1,0 +1,14 @@
+%h2 職員確認
+
+.card.mb-3
+  .card-header ログイン名
+  .card-body= @staff.login_name
+.card.mb-3
+  .card-header 職員名
+  .card-body= @staff.staff_name
+.card.mb-3
+  .card-header 表示順
+  .card-body= @staff.dspo
+
+= link_to '編集', edit_staff_path(@staff), class: 'btn btn-outline-info'
+= link_to '削除', staff_path(@staff), class: 'btn btn-danger', method: :delete, data: { confirm: '削除してよろしいですか？' }
