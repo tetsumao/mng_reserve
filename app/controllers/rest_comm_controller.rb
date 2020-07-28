@@ -1,40 +1,51 @@
 class RestCommController < ApplicationController
   def req
-    url_base = "#{ENV['WEB_RESERVE_URL']}/api/"
-    options = { content_type: :json, accept: :json }
+    # WebReservationLinkage クラスに責務を分けた
+    client = WebReservationLinkage.new
+
+    # url_base = "#{ENV['WEB_RESERVE_URL']}/api/"
+    # options = { content_type: :json, accept: :json }
 
     # APIでログイン
-    response = RestClient.post("#{url_base}sign_in.json", {login_name: ENV['API_LOGIN_NAME'], password: ENV['API_PASSWORD']}, options)
-    login = JSON.parse(response.body)
-    options[:Authorization] = "Bearer #{login['token']}"
+
+    # response = RestClient.post("#{url_base}sign_in.json", {login_name: ENV['API_LOGIN_NAME'], password: ENV['API_PASSWORD']}, options)
+    # login = JSON.parse(response.body)
+    # options[:Authorization] = "Bearer #{login['token']}"
 
     # 現在の日時
-    time_now = Time.zone.now
+
+    time_now = Time.current
+    # Time.zone.now
     # 本日
-    date = Date.new(time_now.year, time_now.month, time_now.day)
-    # 日時の最小(比較用)
-    time_min = Time.new(2000, 1, 1, 0, 0, 0)
+    # date = Date.new(time_now.year, time_now.month, time_now.day)
+
 
     #------------------------- マスタ更新 -------------------------
-    response = RestClient.get("#{url_base}master_updated_at.json", options)
-    puts "response #{response.body}"
-    master_updated_at = JSON.parse(response.body)
+    client.send_master
 
-    master = Item.web_master(master_updated_at['items'])
-    if master.length > 0
-      RestClient.post("#{url_base}upsert_items.json", {items: master.to_json}, options)
-    end
+    # MEMO: response を使い回さないようにしたい
+
+    # response = RestClient.get("#{url_base}master_updated_at.json", options)
+    # puts "response #{response.body}"
+    # master_updated_at = JSON.parse(response.body)
+
+    # master = Item.web_master(master_updated_at['items'])
+    # if master.length > 0
+    #   RestClient.post("#{url_base}upsert_items.json", {items: master.to_json}, options)
+    # end
 
     #------------------------- MNG予約更新(WEB非連携) -------------------------
     # MNG予約リスト[id, updated_at]を取得
-    response = RestClient.get("#{url_base}mng_reservation_id_updated_at.json?date=#{date}", options)
+    response = RestClient.get("#{url_base}mng_reservation_id_updated_at.json?date=#{time_now.to_date}", options)
     mng_reservation_id_updated_at = JSON.parse(response.body)
     # {id: updated_at}の形
     mng_i_u = mng_reservation_id_updated_at['mng_reservations']
     puts "mng_i_u #{mng_i_u}"
     h_mngs = []
     # MNG予約テーブルを取得
-    MngReservation.belongs_not_web.where('mng_reservations.end_date >= ?', date).each do |mng_reservation|
+    # 日時の最小(比較用)
+    time_min = Time.new(2000, 1, 1, 0, 0, 0)
+    MngReservation.belongs_not_web.where('mng_reservations.end_date >= ?', time_now.to_date).each do |mng_reservation|
       mng_reservation_id_s = mng_reservation.id.to_s
       # 対象IDがあるかどうか
       if mng_i_u.key?(mng_reservation_id_s)
