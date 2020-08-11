@@ -28,7 +28,7 @@ class WebReservationsController < ApplicationController
 
   # ※MNG予約登録
   def determination
-    if create_mng_reservation_from_web_reservation(@web_reservation)
+    if MngReservation.create_from_web_reservation(@web_reservation)
       redirect_to web_reservations_url, notice: 'WEB予約をMNG予約に登録しました。'
     else
       redirect_to web_reservations_url, notice: '登録できませんでした。'

@@ -14,6 +14,20 @@ class MngReservation < ApplicationRecord
   
   scope :belongs_not_web, -> {left_joins(:web_reservation).where('web_reservations.id IS NULL')}
 
+  def self.create_from_web_reservation(web_reservation)
+    mng_reservation = MngReservation.new(
+      web_reservation.attributes.symbolize_keys.slice(:user_name, :item_id, :number,
+        :reservation_name, :reservation_date, :start_date, :end_date)
+    )
+    mng_reservation.web_reservation_id = web_reservation.id
+    if mng_reservation.save
+      web_reservation.mng_reservation = mng_reservation
+      web_reservation.save
+    else
+      false
+    end
+  end
+
   private
     def validate_item_stock
       if number > 0

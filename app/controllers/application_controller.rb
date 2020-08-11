@@ -35,23 +35,4 @@ class ApplicationController < ActionController::Base
         end
       end
     end
-
-    def create_mng_reservation_from_web_reservation(web_reservation)
-      mng_reservation = MngReservation.new(
-        user_name: web_reservation.user_name,
-        item_id: web_reservation.item_id,
-        number: web_reservation.number,
-        reservation_name: web_reservation.reservation_name,
-        reservation_date: web_reservation.reservation_date,
-        start_date: web_reservation.start_date,
-        end_date: web_reservation.end_date,
-        web_reservation_id: web_reservation.id
-      )
-      if mng_reservation.save
-        web_reservation.mng_reservation = mng_reservation
-        web_reservation.save
-      else
-        false
-      end
-    end
 end
